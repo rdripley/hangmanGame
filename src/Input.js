@@ -11,26 +11,33 @@ class Input extends Component {
         correctAnswer: [],
         guessedCharacters: [],
         displayedWord: [],
-        showUndoButton: false
+        showUndoButton: false,
+        guessNames: ["Russell is a doof", "Andrea is awesome", "Tim is sweet"]
       }
   
       this.addGuess = this.addGuess.bind(this);
       this.newGame = this.newGame.bind(this);
-      this.resetGame = this.resetGame.bind(this);
-      var guessNames = ["Russell", "Andrea", "Time"];
+      this.resetGame = this.resetGame.bind(this); 
     }
     newGame() {
-        // var filteredNames = this.state.names.filter(function (name) {
-        //     return (name.key !== key);
-        // });
-        // var deletedName = this.state.names.filter(function (name) {
-        //     return (name.key === key);
-        // });
-        // this.setState({
-        //     names: filteredNames,
-        //     deletedNames: this.state.deletedNames.concat(deletedName),
-        //     showUndoButton: true
-        // });
+        var guessedWord = this.state.guessNames[Math.floor(Math.random() * this.state.guessNames.length)].split('')
+        var displayedWord = []
+        var char = ''
+
+        for (var i=0; i < guessedWord.length; i++) {
+            char = guessedWord[i]
+            if (char.match(/[a-z]/i)) {
+              displayedWord[i] = "_"
+            } else {
+              displayedWord[i] = " "
+            }
+        }
+
+        this.setState({
+        correctAnswer: guessedWord,
+        displayedWord: displayedWord
+        });
+        
     }
     //newGame will first clear correctAnswer, guessedCharacters,
     //and displayedWord arrays and will register a loss for that
@@ -45,31 +52,26 @@ class Input extends Component {
         //correct answer. If it is in there, every match
         //will go into the displayedWord array.
         //If it doesn't a new part of the hangman will show.
-        if (this._inputElement.value !== "") {
-          var newGuess = {
-            text: this._inputElement.value,
-          }
-          this.setState((prevState) => {
-            return {
-              names: prevState.names.concat(newGuess)
-            };
-          });
-          this._inputElement.value = "";
-        }
-        e.preventDefault();
+        // if (this._inputElement.value !== "") {
+        //   var newGuess = {
+        //     text: this._inputElement.value,
+        //   }
+        //   this.setState((prevState) => {
+        //     return {
+        //       names: prevState.names.concat(newGuess)
+        //     };
+        //   });
+        //   this._inputElement.value = "";
+        // }
+        // e.preventDefault();
+        alert(this._inputElement.value);
       }
     
     resetGame() {
-        this.setState({
-            names: this.state.names.concat(this.state.deletedNames),
-            deletedNames: [],
-            showUndoButton: false
 
-        })
     }
     
     render() {
-        const showing = this.state.showUndoButton;
         return (
         <div className="inputListMain">
             <div className="header">
@@ -82,20 +84,14 @@ class Input extends Component {
                     >
                     </input>
                     <button type="submit">add</button>
-                    { showing
-                        ? <button 
-                            className="delete" 
-                            type="submit"
-                            onClick={this.resetGame}
-                          >Undo</button>
-                        : null
-                    }
                 </form>
             </div>
-            <Guess 
-                entries={this.state.names} 
-                delete={this.newGame}
-            />
+            <div>
+            <button type="button" onClick={this.newGame}>New Game</button>
+            </div>
+            {/* <Guess 
+                entries={this.state.displayedWord} 
+            /> */}
         </div>
         );
     }

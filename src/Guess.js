@@ -1,35 +1,28 @@
 import React, { Component } from 'react';
-import FlipMove from "react-flip-move";
 
-class List extends Component {
-    constructor(props) {
-        super(props);
+class Guess extends Component {
+    // constructor(props) {
+    //     super(props);
 
-        this.createNames = this.createNames.bind(this);
-    }
-    createNames(name) {
-        return <li 
-                    onClick={() => this.delete(name.key)}
-                    key={name.key}>{name.text}
-                </li>
-    }
-
-    delete(key) {
-        this.props.delete(key);
-    }
+    //     this.displayWord = this.displayWord.bind(this);
+    // }
+    // displayWord(displayedWord) {
+    //     var toString = displayedWord.value.toString();
+    //     toString = toString.replace(",", "");
+    //     return <p>{toString}</p>
+    // }
     
     render() {
-        var listEntries = this.props.entries;
-        var listNames = listEntries.map(this.createNames);
-        var sortedNames = listNames.sort((a, b) => a.key > b.key ? 1 : -1);
+        var characters = this.props.entries.toString();
+        var word = characters.replace(/,/g, " ");
+
+        // var word = characters.map(this.displayWord);
         return (
-            <ul className="theList">
-                <FlipMove duration={250} easing="ease-out">
-                    {sortedNames}
-                </FlipMove>
-            </ul>
+            <div>
+                {word} 
+            </div>
         );
     }
 };
 
-export default List;
+export default Guess;
