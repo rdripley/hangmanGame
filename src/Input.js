@@ -63,13 +63,17 @@ class Input extends Component {
             if(characterToUpper === guessedLetter) {
               newDisplayedWord[i] = characterCheck
             }
-          }
+          } 
           this.setState({
             guessedCharacters: [...this.state.guessedCharacters, guessedLetter],
             displayedWord: newDisplayedWord
           })
           this._inputElement.value = "";
         e.preventDefault();
+      } else {
+        alert("Please guess a letter!")
+        e.preventDefault();
+        return false;
       }
     }
     
