@@ -35,9 +35,10 @@ class Input extends Component {
 
         this.setState({
         correctAnswer: guessedWord,
-        displayedWord: displayedWord
+        displayedWord: displayedWord,
+        guessedCharacters: []
         });
-        
+        console.log(guessedWord)
     }
     //newGame will first clear correctAnswer, guessedCharacters,
     //and displayedWord arrays and will register a loss for that
@@ -51,21 +52,26 @@ class Input extends Component {
         //This will take the character, check it against the
         //correct answer. If it is in there, every match
         //will go into the displayedWord array.
-        //If it doesn't a new part of the hangman will show.
-        // if (this._inputElement.value !== "") {
-        //   var newGuess = {
-        //     text: this._inputElement.value,
-        //   }
-        //   this.setState((prevState) => {
-        //     return {
-        //       names: prevState.names.concat(newGuess)
-        //     };
-        //   });
-        //   this._inputElement.value = "";
-        // }
-        // e.preventDefault();
-        alert(this._inputElement.value);
+        //If it doesn't a new part f the hangman will show.
+        if (this._inputElement.value !== "") {
+          var newDisplayedWord = []
+          newDisplayedWord = this.state.displayedWord.slice()
+          var guessedLetter = this._inputElement.value.toUpperCase()
+          for(let i = 0; i < this.state.correctAnswer.length; i++) {
+            let characterCheck = this.state.correctAnswer[i]
+            let characterToUpper = characterCheck !== " " ? characterCheck.toUpperCase() : characterCheck
+            if(characterToUpper === guessedLetter) {
+              newDisplayedWord[i] = characterCheck
+            }
+          }
+          this.setState({
+            guessedCharacters: [...this.state.guessedCharacters, guessedLetter],
+            displayedWord: newDisplayedWord
+          })
+          this._inputElement.value = "";
+        e.preventDefault();
       }
+    }
     
     resetGame() {
 
@@ -89,9 +95,12 @@ class Input extends Component {
             <div>
             <button type="button" onClick={this.newGame}>New Game</button>
             </div>
-            {/* <Guess 
+            <div>
+              <p>{this.state.guessedCharacters}</p>
+            </div>
+            <Guess 
                 entries={this.state.displayedWord} 
-            /> */}
+            />
         </div>
         );
     }
