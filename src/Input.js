@@ -89,7 +89,25 @@ class Input extends Component {
     };
 
     resetGame() {
+      var displayedWord = []
+        var char = ''
+        var resetGuessedWord = []
+        resetGuessedWord = this.state.correctAnswer.slice()
+        for (var i=0; i < resetGuessedWord.length; i++) {
+            char = resetGuessedWord[i]
+            if (char.match(/[a-z]/i)) {
+              displayedWord[i] = "_"
+            } else {
+              displayedWord[i] = "-"
+            }
+        }
 
+        this.setState({
+        correctAnswer: this.state.guessedWord,
+        displayedWord: displayedWord,
+        guessedCharacters: [],
+        showInput: true
+        });
     }
     
     render() {
@@ -114,6 +132,7 @@ class Input extends Component {
             </div>
             <div>
             <button type="button" onClick={this.newGame}>New Game</button>
+            <button type="button" onClick={this.resetGame}>Reset Game</button>
             </div>
             <div>
               <p>{this.state.guessedCharacters}</p>
