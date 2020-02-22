@@ -11,7 +11,7 @@ class Input extends Component {
         correctAnswer: [],
         guessedCharacters: [],
         displayedWord: [],
-        showUndoButton: false,
+        showInput: false,
         guessNames: ["Russell is a doof", "Andrea is awesome", "Tim is sweet"]
       }
   
@@ -29,14 +29,15 @@ class Input extends Component {
             if (char.match(/[a-z]/i)) {
               displayedWord[i] = "_"
             } else {
-              displayedWord[i] = " "
+              displayedWord[i] = "-"
             }
         }
 
         this.setState({
         correctAnswer: guessedWord,
         displayedWord: displayedWord,
-        guessedCharacters: []
+        guessedCharacters: [],
+        showInput: true
         });
         console.log(guessedWord)
     }
@@ -63,7 +64,8 @@ class Input extends Component {
             if(characterToUpper === guessedLetter) {
               newDisplayedWord[i] = characterCheck
             }
-          } 
+          }
+          this.GameOver(newDisplayedWord)
           this.setState({
             guessedCharacters: [...this.state.guessedCharacters, guessedLetter],
             displayedWord: newDisplayedWord
@@ -77,17 +79,29 @@ class Input extends Component {
       }
     }
     
+    GameOver(checkArray) {
+
+      if(!checkArray.includes("_")) {
+        this.setState({
+          showInput: false
+        })
+      }
+    };
+
     resetGame() {
 
     }
     
     render() {
+      const showing = this.state.showInput;
         return (
         <div className="inputListMain">
             <div className="header">
+            { showing
+                ?
                 <form onSubmit={this.addGuess}>
                     <input 
-                        placeholder="enter name" 
+                        placeholder="Guess a Letter" 
                         ref={(a) => this._inputElement = a}
                         maxlength="1"
                         pattern="[A-Za-z]{1}"
@@ -95,6 +109,8 @@ class Input extends Component {
                     </input>
                     <button type="submit">add</button>
                 </form>
+                : null
+            }
             </div>
             <div>
             <button type="button" onClick={this.newGame}>New Game</button>
