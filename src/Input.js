@@ -33,12 +33,16 @@ class Input extends Component {
               displayedWord[i] = "-"
             }
         }
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         this.setState({
         correctAnswer: guessedWord,
         displayedWord: displayedWord,
         guessedCharacters: [],
-        showInput: true
+        showInput: true,
+        numberOfWrongAnswers: 0
         });
         console.log(guessedWord)
     }
@@ -102,12 +106,16 @@ class Input extends Component {
               displayedWord[i] = "-"
             }
         }
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         this.setState({
         correctAnswer: this.state.guessedWord,
         displayedWord: displayedWord,
         guessedCharacters: [],
-        showInput: true
+        showInput: true,
+        numberOfWrongAnswers: 0
         });
     }
     
