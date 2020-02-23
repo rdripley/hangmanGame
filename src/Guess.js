@@ -15,8 +15,6 @@ class Guess extends Component {
     render() {
         var characters = this.props.entries.toString();
         var word = characters.replace(/,/g, " ");
-
-        // var word = characters.map(this.displayWord);
         return (
             <div>
                 {word} 

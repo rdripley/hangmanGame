@@ -12,7 +12,8 @@ class Input extends Component {
         guessedCharacters: [],
         displayedWord: [],
         showInput: false,
-        guessNames: ["Russell is a doof", "Andrea is awesome", "Tim is sweet"]
+        guessNames: ["Russell is a doof", "Andrea is awesome", "Tim is sweet"],
+        numberOfWrongAnswers: 0
       }
   
       this.addGuess = this.addGuess.bind(this);
@@ -41,19 +42,8 @@ class Input extends Component {
         });
         console.log(guessedWord)
     }
-    //newGame will first clear correctAnswer, guessedCharacters,
-    //and displayedWord arrays and will register a loss for that
-    //user.
-    //Then it will pick a name from the array and put it in the 
-    //correctAnswer array. It will also use the correctAnswer array
-    //to create the displayedWord array, this will be the empty
-    //letters on the screen.
 
     addGuess(e) {
-        //This will take the character, check it against the
-        //correct answer. If it is in there, every match
-        //will go into the displayedWord array.
-        //If it doesn't a new part f the hangman will show.
         if (this._inputElement.value !== "" && this.state.guessedCharacters.includes(this._inputElement.value.toUpperCase()) === false) {
           var newDisplayedWord = []
           newDisplayedWord = this.state.displayedWord.slice()
@@ -62,7 +52,13 @@ class Input extends Component {
             let characterCheck = this.state.correctAnswer[i]
             let characterToUpper = characterCheck !== " " ? characterCheck.toUpperCase() : characterCheck
             if(characterToUpper === guessedLetter) {
+              console.log('check');
               newDisplayedWord[i] = characterCheck
+              break;
+            } else {
+              console.log('here');
+              this.wrongAnswer();
+              break;
             }
           }
           this.GameOver(newDisplayedWord)
@@ -116,7 +112,73 @@ class Input extends Component {
     }
     
     wrongAnswer() {
-
+      var addToWrongAnswers = this.state.numberOfWrongAnswers
+      addToWrongAnswers++
+      console.log(addToWrongAnswers);
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      switch(addToWrongAnswers) {
+        case 1:
+          ctx.moveTo(0, 150);
+          ctx.lineTo(150, 150);
+          ctx.stroke();
+        break;
+        case 2:
+          ctx.moveTo(10, 0);
+          ctx.lineTo(10, 600);
+          ctx.stroke(); 
+        break;
+        case 3:
+          ctx.moveTo(0, 5);
+          ctx.lineTo(70, 5);
+          ctx.stroke(); 
+          break;
+        case 4:
+            ctx.moveTo(60, 5);
+            ctx.lineTo(60, 15);
+            ctx.stroke(); 
+            break;
+        case 5:
+          ctx.beginPath();
+          ctx.arc(60, 25, 10, 0, Math.PI*2, true);
+          ctx.stroke();
+          break;
+        case 6:
+          ctx.moveTo(60, 36);
+          ctx.lineTo(60, 70);
+          ctx.stroke(); 
+          break;
+        case 7:
+          ctx.moveTo(60, 46);
+          ctx.lineTo(100, 50);
+          ctx.stroke(); 
+          break;
+        case 8:
+          ctx.moveTo(60, 46);
+          ctx.lineTo(20, 50);
+          ctx.stroke(); 
+          break;
+        case 9:
+          ctx.moveTo(60, 70);
+          ctx.lineTo(100, 100);
+          ctx.stroke(); 
+          break;
+        case 10:
+          ctx.moveTo(60, 70);
+          ctx.lineTo(20, 100);
+          ctx.stroke(); 
+          break;
+        default:
+          break;
+      }
+      this.setState({
+        numberOfWrongAnswers: addToWrongAnswers
+      })
+      if(addToWrongAnswers === 10) {
+        this.setState({
+          showInput: false
+        })
+      }
     }
 
     render() {
@@ -126,7 +188,7 @@ class Input extends Component {
       }
         return (
         <div className="inputListMain">
-          <canvas id="myCanvas" width="300" height="300" style={canvasStyling}></canvas>
+          <canvas id="myCanvas" width="300" height="150" style={canvasStyling}></canvas>
             <div className="header">
             { showing
                 ?
