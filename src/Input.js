@@ -54,7 +54,7 @@ class Input extends Component {
         //correct answer. If it is in there, every match
         //will go into the displayedWord array.
         //If it doesn't a new part f the hangman will show.
-        if (this._inputElement.value !== "") {
+        if (this._inputElement.value !== "" && this.state.guessedCharacters.includes(this._inputElement.value.toUpperCase()) === false) {
           var newDisplayedWord = []
           newDisplayedWord = this.state.displayedWord.slice()
           var guessedLetter = this._inputElement.value.toUpperCase()
@@ -72,8 +72,13 @@ class Input extends Component {
           })
           this._inputElement.value = "";
         e.preventDefault();
-      } else {
+      } else if (this._inputElement.value === "") {
         alert("Please guess a letter!")
+        e.preventDefault();
+        return false;
+      } else {
+        alert("Please choose a letter you haven't guessed yet!")
+        this._inputElement.value = "";
         e.preventDefault();
         return false;
       }
@@ -110,10 +115,18 @@ class Input extends Component {
         });
     }
     
+    wrongAnswer() {
+
+    }
+
     render() {
       const showing = this.state.showInput;
+      const canvasStyling = {
+        border:'1px solid #000000'
+      }
         return (
         <div className="inputListMain">
+          <canvas id="myCanvas" width="300" height="300" style={canvasStyling}></canvas>
             <div className="header">
             { showing
                 ?
