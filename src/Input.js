@@ -12,39 +12,53 @@ class Input extends Component {
         guessedCharacters: [],
         displayedWord: [],
         showInput: false,
-        guessNames: ["Russell is a doof", "Andrea is awesome", "Tim is sweet"],
         numberOfWrongAnswers: 0
       }
   
       this.addGuess = this.addGuess.bind(this);
       this.newGame = this.newGame.bind(this);
       this.resetGame = this.resetGame.bind(this); 
+      
+    }
+    getMovie() {
+      return fetch(
+        `https://api.themoviedb.org/3/genre/27/movies?api_key=4e55ce60390a48e75c13783cf897f2b8&language=en-US&include_adult=false&sort_by=created_at.asc`
+      )
+        .then(res => res.json())
+        .then(res => res.results.map(result => result.title));
     }
     newGame() {
-        var guessedWord = this.state.guessNames[Math.floor(Math.random() * this.state.guessNames.length)].split('')
-        var displayedWord = []
-        var char = ''
-
-        for (var i=0; i < guessedWord.length; i++) {
-            char = guessedWord[i]
-            if (char.match(/[a-z]/i)) {
-              displayedWord[i] = "_"
-            } else {
-              displayedWord[i] = "-"
-            }
-        }
-        var canvas = document.getElementById("myCanvas");
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        this.setState({
-        correctAnswer: guessedWord,
-        displayedWord: displayedWord,
-        guessedCharacters: [],
-        showInput: true,
-        numberOfWrongAnswers: 0
-        });
-        console.log(guessedWord)
+        Promise.all([this.getMovie()])
+      .then(([horror]) => [...horror])
+      .then(
+        function(title) {
+          const randomTitle = title.sort(() => {
+            return 0.5 - Math.random();
+          });
+          var guessedWord = randomTitle
+          var displayedWord = []
+          var char = ''
+          for (var i=0; i < guessedWord.length; i++) {
+              char = guessedWord[i]
+              if (char.match(/[a-z]/i)) {
+                displayedWord[i] = "_"
+              } else {
+                displayedWord[i] = "-"
+              }
+          }
+          var canvas = document.getElementById("myCanvas");
+          var ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+          this.setState({
+          correctAnswer: guessedWord,
+          displayedWord: displayedWord,
+          guessedCharacters: [],
+          showInput: true,
+          numberOfWrongAnswers: 0
+          });
+        }.bind(this)
+      )
     }
 
     addGuess(e) {
@@ -56,11 +70,9 @@ class Input extends Component {
             let characterCheck = this.state.correctAnswer[i]
             let characterToUpper = characterCheck !== " " ? characterCheck.toUpperCase() : characterCheck
             if(characterToUpper === guessedLetter) {
-              console.log('check');
               newDisplayedWord[i] = characterCheck
               break;
             } else {
-              console.log('here');
               this.wrongAnswer();
               break;
             }
@@ -122,7 +134,6 @@ class Input extends Component {
     wrongAnswer() {
       var addToWrongAnswers = this.state.numberOfWrongAnswers
       addToWrongAnswers++
-      console.log(addToWrongAnswers);
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
       switch(addToWrongAnswers) {
