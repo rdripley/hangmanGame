@@ -12,7 +12,7 @@ class Input extends Component {
       correctAnswer: "",
       guessedCharacters: [],
       displayedWord: [],
-      showInput: false,
+      showHideFormatting: false,
       numberOfWrongAnswers: 0,
       id: null
     };
@@ -26,7 +26,7 @@ class Input extends Component {
     this.setState({
       correctAnswer: childDataArray[0],
       displayedWord: childDataArray[1],
-      showInput: childDataArray[2],
+      showHideFormatting: childDataArray[2],
       id: childDataArray[3],
       guessedCharacters: childDataArray[4]
     });
@@ -91,7 +91,7 @@ class Input extends Component {
   GameOver(gameState) {
     this.handleUpdateGame(gameState);
     this.setState({
-      showInput: false
+      showHideFormatting: false
     });
   }
 
@@ -112,11 +112,12 @@ class Input extends Component {
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    this.handleUpdateGame("Reset");
     this.setState({
-      correctAnswer: this.state.guessedWord,
+      correctAnswer: resetGuessedWord,
       displayedWord: displayedWord,
       guessedCharacters: [],
-      showInput: true,
+      showHideFormatting: true,
       numberOfWrongAnswers: 0
     });
   }
@@ -191,7 +192,7 @@ class Input extends Component {
   handleUpdateGame = async calledFrom => {
     const { id, correctAnswer } = this.state;
     let payload = {};
-    if (calledFrom === "Guess") {
+    if (calledFrom === "Guess" || calledFrom === "Reset") {
       payload = {
         Answer: correctAnswer,
         Win: 0,
@@ -212,13 +213,13 @@ class Input extends Component {
     }
 
     console.log(payload, id);
-    await api.updateGameById(id, payload).then(res => {
-      window.alert(`Game updated successfully`);
-    });
+    await api.updateGameById(id, payload).then(res => {});
   };
 
   render() {
-    const showing = this.state.showInput;
+    const showingInputReset = this.state.showHideFormatting;
+    const showingNewGame =
+      this.state.showHideFormatting === true ? false : true;
     const canvasStyling = {
       border: "1px solid #000000"
     };
@@ -231,7 +232,7 @@ class Input extends Component {
           style={canvasStyling}
         ></canvas>
         <div className='header'>
-          {showing ? (
+          {showingInputReset ? (
             <form onSubmit={this.addGuess}>
               <input
                 placeholder='Guess a Letter'
@@ -244,10 +245,14 @@ class Input extends Component {
           ) : null}
         </div>
         <div>
-          <CreateGame getDataFromChild={this.createGameData} />
-          <button type='button' onClick={this.resetGame}>
-            Reset Game
-          </button>
+          {showingNewGame ? (
+            <CreateGame getDataFromChild={this.createGameData} />
+          ) : null}
+          {showingInputReset ? (
+            <button type='button' onClick={this.resetGame}>
+              Reset Game
+            </button>
+          ) : null}
         </div>
         <div>
           <p>{this.state.guessedCharacters}</p>
