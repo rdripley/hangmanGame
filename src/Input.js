@@ -1,63 +1,36 @@
 import React, { Component } from "react";
 import Guess from "./Guess";
 import "./Input.css";
+import api from "./Api.js";
+import CreateGame from "./createGame.js";
 
 class Input extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      correctAnswer: [],
+      correctAnswer: "",
       guessedCharacters: [],
       displayedWord: [],
       showInput: false,
-      numberOfWrongAnswers: 0
+      numberOfWrongAnswers: 0,
+      id: null
     };
 
     this.addGuess = this.addGuess.bind(this);
-    this.newGame = this.newGame.bind(this);
+    // this.newGame = this.newGame.bind(this);
     this.resetGame = this.resetGame.bind(this);
+    this.createGameData = this.createGameData.bind(this);
   }
-  getMovie() {
-    return fetch(
-      `https://api.themoviedb.org/3/genre/27/movies?api_key=4e55ce60390a48e75c13783cf897f2b8&language=en-US&include_adult=false&sort_by=created_at.asc`
-    )
-      .then(res => res.json())
-      .then(res => res.results.map(result => result.title));
-  }
-  newGame() {
-    Promise.all([this.getMovie()])
-      .then(([horror]) => [...horror])
-      .then(
-        function(title) {
-          const randomTitle = title.sort(() => {
-            return 0.5 - Math.random();
-          });
-          var guessedWord = randomTitle[0];
-          var displayedWord = [];
-          var char = "";
-          for (var i = 0; i < guessedWord.length; i++) {
-            char = guessedWord[i];
-            if (char.match(/[a-z]/i)) {
-              displayedWord[i] = "_";
-            } else {
-              displayedWord[i] = "-";
-            }
-          }
-          var canvas = document.getElementById("myCanvas");
-          var ctx = canvas.getContext("2d");
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          this.setState({
-            correctAnswer: guessedWord,
-            displayedWord: displayedWord,
-            guessedCharacters: [],
-            showInput: true,
-            numberOfWrongAnswers: 0
-          });
-        }.bind(this)
-      );
-  }
+  createGameData = childDataArray => {
+    this.setState({
+      correctAnswer: childDataArray[0],
+      displayedWord: childDataArray[1],
+      showInput: childDataArray[2],
+      id: childDataArray[3],
+      guessedCharacters: childDataArray[4]
+    });
+  };
 
   addGuess(e) {
     if (
@@ -78,16 +51,9 @@ class Input extends Component {
             : characterCheck;
         if (characterToUpper === guessedLetter) {
           newDisplayedWord[i] = characterCheck;
-          break;
         }
-        // else {
-        //   this.wrongAnswer();
-        //   break;
-        // }
       }
       console.log(this.state.correctAnswer);
-      console.log(newDisplayedWord);
-      console.log(checkDisplayedWord);
       var arraysMatch = function() {
         for (let i = 0; i < newDisplayedWord.length; i++) {
           if (newDisplayedWord[i] !== checkDisplayedWord[i]) {
@@ -96,15 +62,18 @@ class Input extends Component {
         }
         return true;
       };
-      console.log(arraysMatch(newDisplayedWord, checkDisplayedWord));
-      if (arraysMatch(newDisplayedWord, checkDisplayedWord) === true) {
-        this.wrongAnswer();
-      }
-      this.GameOver(newDisplayedWord);
       this.setState({
         guessedCharacters: [...this.state.guessedCharacters, guessedLetter],
         displayedWord: newDisplayedWord
       });
+      this.handleUpdateGame("Guess");
+      // console.log(arraysMatch(newDisplayedWord, checkDisplayedWord));
+      if (arraysMatch(newDisplayedWord, checkDisplayedWord) === true) {
+        this.wrongAnswer();
+      }
+      if (!newDisplayedWord.includes("_")) {
+        this.GameOver("Win");
+      }
       this._inputElement.value = "";
       e.preventDefault();
     } else if (this._inputElement.value === "") {
@@ -119,12 +88,11 @@ class Input extends Component {
     }
   }
 
-  GameOver(checkArray) {
-    if (!checkArray.includes("_")) {
-      this.setState({
-        showInput: false
-      });
-    }
+  GameOver(gameState) {
+    this.handleUpdateGame(gameState);
+    this.setState({
+      showInput: false
+    });
   }
 
   resetGame() {
@@ -216,11 +184,38 @@ class Input extends Component {
       numberOfWrongAnswers: addToWrongAnswers
     });
     if (addToWrongAnswers === 10) {
-      this.setState({
-        showInput: false
-      });
+      this.GameOver("Loss");
     }
   }
+
+  handleUpdateGame = async calledFrom => {
+    const { id, correctAnswer } = this.state;
+    let payload = {};
+    if (calledFrom === "Guess") {
+      payload = {
+        Answer: correctAnswer,
+        Win: 0,
+        Loss: 0
+      };
+    } else if (calledFrom === "Win") {
+      payload = {
+        Answer: correctAnswer,
+        Win: 1,
+        Loss: 0
+      };
+    } else if (calledFrom === "Loss") {
+      payload = {
+        Answer: correctAnswer,
+        Win: 0,
+        Loss: 1
+      };
+    }
+
+    console.log(payload, id);
+    await api.updateGameById(id, payload).then(res => {
+      window.alert(`Game updated successfully`);
+    });
+  };
 
   render() {
     const showing = this.state.showInput;
@@ -249,9 +244,7 @@ class Input extends Component {
           ) : null}
         </div>
         <div>
-          <button type='button' onClick={this.newGame}>
-            New Game
-          </button>
+          <CreateGame getDataFromChild={this.createGameData} />
           <button type='button' onClick={this.resetGame}>
             Reset Game
           </button>
