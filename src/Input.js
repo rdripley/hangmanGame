@@ -254,7 +254,6 @@ class Input extends Component {
                 placeholder='Guess a Letter'
                 ref={a => (this._inputElement = a)}
                 maxlength='1'
-                pattern='[A-Za-z]{1}'
               ></input>
               <button type='submit'>add</button>
             </form>
