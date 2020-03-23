@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import api from "./Api.js";
+import "./createGame.css";
 
 class CreateGame extends Component {
   constructor(props) {
@@ -46,7 +47,6 @@ class CreateGame extends Component {
     const data = { childData };
     const payload = { Answer: data.childData[0] };
     const guessedCharacters = [];
-    console.log(payload);
     let id = await api.insertGame(payload).then(res => {
       return res.data.id;
     });
@@ -58,7 +58,7 @@ class CreateGame extends Component {
   render() {
     return (
       <div>
-        <button type='button' onClick={this.newGame}>
+        <button className='Create' type='button' onClick={this.newGame}>
           New Game
         </button>
       </div>

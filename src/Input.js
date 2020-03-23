@@ -18,7 +18,6 @@ class Input extends Component {
     };
 
     this.addGuess = this.addGuess.bind(this);
-    // this.newGame = this.newGame.bind(this);
     this.resetGame = this.resetGame.bind(this);
     this.createGameData = this.createGameData.bind(this);
   }
@@ -53,7 +52,6 @@ class Input extends Component {
           newDisplayedWord[i] = characterCheck;
         }
       }
-      console.log(this.state.correctAnswer);
       var arraysMatch = function() {
         for (let i = 0; i < newDisplayedWord.length; i++) {
           if (newDisplayedWord[i] !== checkDisplayedWord[i]) {
@@ -67,7 +65,6 @@ class Input extends Component {
         displayedWord: newDisplayedWord
       });
       this.handleUpdateGame("Guess");
-      // console.log(arraysMatch(newDisplayedWord, checkDisplayedWord));
       if (arraysMatch(newDisplayedWord, checkDisplayedWord) === true) {
         this.wrongAnswer();
       }
@@ -131,51 +128,71 @@ class Input extends Component {
       case 1:
         ctx.moveTo(0, 150);
         ctx.lineTo(150, 150);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 2:
         ctx.moveTo(10, 0);
         ctx.lineTo(10, 600);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 3:
         ctx.moveTo(0, 5);
         ctx.lineTo(70, 5);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 4:
         ctx.moveTo(60, 5);
         ctx.lineTo(60, 15);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 5:
         ctx.beginPath();
         ctx.arc(60, 25, 10, 0, Math.PI * 2, true);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 6:
         ctx.moveTo(60, 36);
         ctx.lineTo(60, 70);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 7:
         ctx.moveTo(60, 46);
         ctx.lineTo(100, 50);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 8:
         ctx.moveTo(60, 46);
         ctx.lineTo(20, 50);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 9:
         ctx.moveTo(60, 70);
         ctx.lineTo(100, 100);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       case 10:
         ctx.moveTo(60, 70);
         ctx.lineTo(20, 100);
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.lineWidth = 5;
         ctx.stroke();
         break;
       default:
@@ -212,7 +229,6 @@ class Input extends Component {
       };
     }
 
-    console.log(payload, id);
     await api.updateGameById(id, payload).then(res => {});
   };
 
@@ -221,7 +237,7 @@ class Input extends Component {
     const showingNewGame =
       this.state.showHideFormatting === true ? false : true;
     const canvasStyling = {
-      border: "1px solid #000000"
+      border: "1px solid #b3b3b3"
     };
     return (
       <div className='inputListMain'>
@@ -249,7 +265,7 @@ class Input extends Component {
             <CreateGame getDataFromChild={this.createGameData} />
           ) : null}
           {showingInputReset ? (
-            <button type='button' onClick={this.resetGame}>
+            <button type='button' className='Reset' onClick={this.resetGame}>
               Reset Game
             </button>
           ) : null}
@@ -257,7 +273,7 @@ class Input extends Component {
         <div>
           <p>{this.state.guessedCharacters}</p>
         </div>
-        <Guess entries={this.state.displayedWord} />
+        <Guess className='DisplayedWord' entries={this.state.displayedWord} />
       </div>
     );
   }
