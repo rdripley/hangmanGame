@@ -3,6 +3,7 @@ import Guess from "./Guess";
 import "./Input.css";
 import api from "./Api.js";
 import CreateGame from "./createGame.js";
+import GamesTable from "./gamesTable.js";
 
 class Input extends Component {
   constructor(props) {
@@ -237,42 +238,50 @@ class Input extends Component {
     const showingNewGame =
       this.state.showHideFormatting === true ? false : true;
     const canvasStyling = {
-      border: "1px solid #b3b3b3"
+      border: "1px solid #FFFFFF"
     };
+    const Padding = { padding: "0px 50px" };
     return (
       <div className='inputListMain'>
-        <canvas
-          id='myCanvas'
-          width='300'
-          height='150'
-          style={canvasStyling}
-        ></canvas>
-        <div className='header'>
-          {showingInputReset ? (
-            <form onSubmit={this.addGuess}>
-              <input
-                placeholder='Guess a Letter'
-                ref={a => (this._inputElement = a)}
-                maxlength='1'
-              ></input>
-              <button type='submit'>add</button>
-            </form>
-          ) : null}
-        </div>
-        <div>
-          {showingNewGame ? (
-            <CreateGame getDataFromChild={this.createGameData} />
-          ) : null}
-          {showingInputReset ? (
-            <button type='button' className='Reset' onClick={this.resetGame}>
-              Reset Game
-            </button>
-          ) : null}
+        <div style={Padding}>
+          <canvas
+            id='myCanvas'
+            width='300'
+            height='150'
+            style={canvasStyling}
+          ></canvas>
+          <div className='header'>
+            {showingInputReset ? (
+              <form onSubmit={this.addGuess}>
+                <input
+                  placeholder='Guess a Letter'
+                  ref={a => (this._inputElement = a)}
+                  maxlength='1'
+                ></input>
+                <button type='submit'>add</button>
+              </form>
+            ) : null}
+          </div>
+          <div>
+            {showingNewGame ? (
+              <CreateGame getDataFromChild={this.createGameData} />
+            ) : null}
+            {showingInputReset ? (
+              <button type='button' className='Reset' onClick={this.resetGame}>
+                Reset Game
+              </button>
+            ) : null}
+          </div>
         </div>
         <div>
           <p>{this.state.guessedCharacters}</p>
         </div>
-        <Guess className='DisplayedWord' entries={this.state.displayedWord} />
+        <div className='DisplayedWord'>
+          <Guess entries={this.state.displayedWord} />
+        </div>
+        <div>
+          <GamesTable />
+        </div>
       </div>
     );
   }

@@ -1,5 +1,8 @@
+.inputListMain {
+  padding: 0px 40px 40px;
+}
 .inputListMain .header input {
-  padding: 10px;
+  padding: 10px 25px;
   font-size: 16px;
   border: 2px solid #fff;
   width: 165px;
@@ -24,12 +27,15 @@
   color: #fff;
   border: 2px solid #eb6123;
   font-family: "Bodoni MT Poster Compressed";
+  padding: 100px, 25px;
 }
 .DisplayedWord {
   font-size: 24px;
   font-family: "Bodoni MT Poster Compressed";
+  padding: 10px 40px 40px;
 }
 p {
   font-size: 24px;
   font-family: "Bodoni MT Poster Compressed";
+  padding: 25px 25px;
 }
