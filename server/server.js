@@ -8,9 +8,7 @@ const db = require("./db");
 const gameRouter = require("./routes/games-router");
 
 const app = express();
-app.listen(port, () => {
-  console.log(`Our app is running on port ${port}`);
-});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
@@ -26,4 +24,6 @@ app.get("/", function(req, res) {
 
 app.use("/api", gameRouter);
 
-app.listen(port);
+app.listen(port, () => {
+  console.log(`Our app is running on port ${port}`);
+});
