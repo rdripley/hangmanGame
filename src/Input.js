@@ -15,13 +15,27 @@ class Input extends Component {
       displayedWord: [],
       showHideFormatting: false,
       numberOfWrongAnswers: 0,
-      id: null
+      id: null,
+      games: [],
+      isLoading: false
     };
 
     this.addGuess = this.addGuess.bind(this);
     this.resetGame = this.resetGame.bind(this);
     this.createGameData = this.createGameData.bind(this);
   }
+
+  componentDidMount = async () => {
+    this.setState({ isLoading: true });
+
+    await api.getAllGames().then(games => {
+      this.setState({
+        games: games.data.data,
+        isLoading: false
+      });
+    });
+  };
+
   createGameData = childDataArray => {
     this.setState({
       correctAnswer: childDataArray[0],
@@ -43,6 +57,7 @@ class Input extends Component {
       newDisplayedWord = this.state.displayedWord.slice();
       var checkDisplayedWord = this.state.displayedWord.slice();
       var guessedLetter = this._inputElement.value.toUpperCase();
+      var guessedCharactersDB = this.state.guessedCharacters + guessedLetter;
       for (let i = 0; i < this.state.correctAnswer.length; i++) {
         let characterCheck = this.state.correctAnswer[i];
         let characterToUpper =
@@ -61,11 +76,11 @@ class Input extends Component {
         }
         return true;
       };
-      this.setState({
+      this.setState(prevState => ({
         guessedCharacters: [...this.state.guessedCharacters, guessedLetter],
         displayedWord: newDisplayedWord
-      });
-      this.handleUpdateGame("Guess");
+      }));
+      this.handleUpdateGame("Guess", guessedCharactersDB);
       if (arraysMatch(newDisplayedWord, checkDisplayedWord) === true) {
         this.wrongAnswer();
       }
@@ -87,7 +102,7 @@ class Input extends Component {
   }
 
   GameOver(gameState) {
-    this.handleUpdateGame(gameState);
+    this.handleUpdateGame(gameState, "");
     this.setState({
       showHideFormatting: false
     });
@@ -111,7 +126,7 @@ class Input extends Component {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
 
-    this.handleUpdateGame("Reset");
+    this.handleUpdateGame("Reset", "");
     this.setState({
       correctAnswer: resetGuessedWord,
       displayedWord: displayedWord,
@@ -124,7 +139,6 @@ class Input extends Component {
   wrongAnswer() {
     var addToWrongAnswers = this.state.numberOfWrongAnswers;
     addToWrongAnswers++;
-    console.log(addToWrongAnswers);
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     switch (addToWrongAnswers) {
@@ -209,30 +223,37 @@ class Input extends Component {
     }
   }
 
-  handleUpdateGame = async calledFrom => {
+  handleUpdateGame = async (calledFrom, guessedCharactersDB) => {
     const { id, correctAnswer } = this.state;
     let payload = {};
-    if (calledFrom === "Guess" || calledFrom === "Reset") {
+    let guessedCharacters = guessedCharactersDB;
+    if (calledFrom === "Guess") {
+      payload = {
+        GuessedCharacters: guessedCharacters
+      };
+    } else if (calledFrom === "Reset") {
       payload = {
         Answer: correctAnswer,
         Win: 0,
-        Loss: 0
+        Loss: 0,
+        GuessedCharacters: ""
       };
     } else if (calledFrom === "Win") {
       payload = {
-        Answer: correctAnswer,
         Win: 1,
         Loss: 0
       };
     } else if (calledFrom === "Loss") {
       payload = {
-        Answer: correctAnswer,
         Win: 0,
         Loss: 1
       };
     }
 
     await api.updateGameById(id, payload).then(res => {});
+    if (calledFrom === "Win" || calledFrom === "Loss") {
+      this.componentDidMount();
+    }
   };
 
   render() {
@@ -282,7 +303,10 @@ class Input extends Component {
           <Guess entries={this.state.displayedWord} />
         </div>
         <div>
-          <GamesTable />
+          <GamesTable
+            games={this.state.games}
+            isLoading={this.state.isLoading}
+          />
         </div>
       </div>
     );

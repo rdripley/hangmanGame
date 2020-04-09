@@ -50,9 +50,14 @@ let updateGame = async (req, res) => {
         message: "Game not found!"
       });
     }
-    game.Answer = body.Answer;
-    game.Win = body.Win;
-    game.Loss = body.Loss;
+
+    game.Answer = body.Answer === undefined ? game.Answer : body.Answer;
+    game.GuessedCharacters =
+      body.GuessedCharacters === undefined
+        ? game.GuessedCharacters
+        : body.GuessedCharacters;
+    game.Win = body.Win === undefined ? game.Win : body.Win;
+    game.Loss = body.Loss === undefined ? game.Loss : body.Loss;
     game
       .save()
       .then(() => {

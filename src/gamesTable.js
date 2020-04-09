@@ -13,29 +13,28 @@ const Wrapper = styled.div`
 `;
 
 class GamesList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      games: [],
-      columns: [],
-      isLoading: false
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  // this.state = {
+  //   games: [],
+  //   isLoading: false
+  // };
+  // }
 
-  componentDidMount = async () => {
-    this.setState({ isLoading: true });
+  // componentDidMount = async () => {
+  //   this.setState({ isLoading: true });
 
-    await api.getAllGames().then(games => {
-      console.log(games);
-      this.setState({
-        games: games.data.data,
-        isLoading: false
-      });
-    });
-  };
+  //   await api.getAllGames().then(games => {
+  //     this.setState({
+  //       games: games.data.data,
+  //       isLoading: false
+  //     });
+  //   });
+  // };
 
   render() {
-    const { games, isLoading } = this.state;
+    const games = this.props.games;
+    const isLoading = this.props.isLoading;
 
     const columns = [
       {
@@ -46,6 +45,11 @@ class GamesList extends Component {
       {
         Header: "Answer",
         accessor: "Answer",
+        filterable: true
+      },
+      {
+        Header: "GuessedCharacters",
+        accessor: "GuessedCharacters",
         filterable: true
       },
       {
