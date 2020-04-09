@@ -109,6 +109,7 @@ class Input extends Component {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
 
     this.handleUpdateGame("Reset");
     this.setState({
@@ -123,6 +124,7 @@ class Input extends Component {
   wrongAnswer() {
     var addToWrongAnswers = this.state.numberOfWrongAnswers;
     addToWrongAnswers++;
+    console.log(addToWrongAnswers);
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     switch (addToWrongAnswers) {
@@ -199,9 +201,9 @@ class Input extends Component {
       default:
         break;
     }
-    this.setState({
+    this.setState(prevState => ({
       numberOfWrongAnswers: addToWrongAnswers
-    });
+    }));
     if (addToWrongAnswers === 10) {
       this.GameOver("Loss");
     }

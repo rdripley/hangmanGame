@@ -36,7 +36,6 @@ class GamesList extends Component {
 
   render() {
     const { games, isLoading } = this.state;
-    console.log("TCL: GamesList -> render -> games", games);
 
     const columns = [
       {
